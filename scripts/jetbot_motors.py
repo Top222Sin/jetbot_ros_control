@@ -3,7 +3,9 @@ import rospy
 import time
 
 from Adafruit_MotorHAT import Adafruit_MotorHAT
+from geometry_msgs.msg import Twist
 from std_msgs.msg import String
+from std_msgs.msg import Float32
 
 
 
@@ -44,24 +46,27 @@ def on_cmd_dir(msg):
 
 # raw L/R motor commands (speed, speed)
 def on_cmd_raw(msg):
-	rospy.loginfo(rospy.get_caller_id() + ' cmd_raw=%s', msg.data)
+	rospy.loginfo(rospy.get_caller_id() + ' left_vel=%s', msg.linear.x)
+	rospy.loginfo(rospy.get_caller_id() + ' right_vel=%s', msg.linear.y)
+	set_speed(motor_left_ID, msg.linear.x)
+	set_speed(motor_right_ID, msg.linear.y)
 
 # simple string commands (left/right/forward/backward/stop)
 def on_cmd_str(msg):
 	rospy.loginfo(rospy.get_caller_id() + ' cmd_str=%s', msg.data)
 
 	if msg.data.lower() == "left":
-		set_speed(motor_left_ID,  -1.0)
-		set_speed(motor_right_ID,  1.0) 
+		set_speed(motor_left_ID,  -0.5)
+		set_speed(motor_right_ID,  0.5) 
 	elif msg.data.lower() == "right":
-		set_speed(motor_left_ID,   1.0)
-		set_speed(motor_right_ID, -1.0) 
+		set_speed(motor_left_ID,   0.5)
+		set_speed(motor_right_ID, -0.5) 
 	elif msg.data.lower() == "forward":
-		set_speed(motor_left_ID,   1.0)
-		set_speed(motor_right_ID,  1.0)
+		set_speed(motor_left_ID,   0.5)
+		set_speed(motor_right_ID,  0.5)
 	elif msg.data.lower() == "backward":
-		set_speed(motor_left_ID,  -1.0)
-		set_speed(motor_right_ID, -1.0)  
+		set_speed(motor_left_ID,  -0.5)
+		set_speed(motor_right_ID, -0.5)  
 	elif msg.data.lower() == "stop":
 		all_stop()
 	else:
@@ -77,6 +82,7 @@ if __name__ == '__main__':
 	motor_left_ID = 1
 	motor_right_ID = 2
 
+	cmd = Twist()
 	motor_left = motor_driver.getMotor(motor_left_ID)
 	motor_right = motor_driver.getMotor(motor_right_ID)
 
@@ -87,7 +93,7 @@ if __name__ == '__main__':
 	rospy.init_node('jetbot_motors')
 	
 	rospy.Subscriber('~cmd_dir', String, on_cmd_dir)
-	rospy.Subscriber('~cmd_raw', String, on_cmd_raw)
+	rospy.Subscriber('jetbot_ros/cmd_raw', Twist, on_cmd_raw)
 	rospy.Subscriber('~cmd_str', String, on_cmd_str)
 
 	# start running

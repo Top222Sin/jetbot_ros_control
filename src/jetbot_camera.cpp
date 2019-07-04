@@ -126,6 +126,9 @@ int main(int argc, char **argv)
 	}
 
 
+	//jyang
+	// image_transport::ImageTransport it(private_nh);
+	// image_transport::Publisher camera_publisher = it.advertise("raw", 1);
 	/*
 	 * advertise publisher topics
 	 */
@@ -149,7 +152,7 @@ int main(int argc, char **argv)
 	while( ros::ok() )
 	{
 		//if( raw_pub->getNumSubscribers() > 0 )
-			aquireFrame();
+		aquireFrame();
 
 		ros::spinOnce();
 	}

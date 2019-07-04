@@ -7,6 +7,8 @@ GAZEBO_DIR=~/.gazebo
 GAZEBO_MODEL_DIR=$GAZEBO_DIR/models
 GAZEBO_JETBOT_DIR=$GAZEBO_MODEL_DIR/jetbot
 
+# ~/.gazebo/models
+
 echo "checking for:  " $GAZEBO_DIR
 
 if [ ! -d "$GAZEBO_DIR" ]; then
